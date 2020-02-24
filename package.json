@@ -1,0 +1,29 @@
+{
+  "name": "rust-doc-is-too-verbose",
+  "version": "0.0.1",
+  "description": "Reduce verbosity of rust doc",
+  "main": "src/content_script.ts",
+  "scripts": {},
+  "author": "SeongChan Lee",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^13.7.4",
+    "@types/parsimmon": "^1.10.1",
+    "@types/webpack": "^4.41.6",
+    "@typescript-eslint/eslint-plugin": "^2.20.0",
+    "@typescript-eslint/parser": "^2.20.0",
+    "copy-webpack-plugin": "^5.1.1",
+    "eslint": "^6.8.0",
+    "prettier": "^1.19.1",
+    "ts-loader": "^6.2.1",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.8.2",
+    "web-ext": "^4.1.0",
+    "webpack": "^4.41.6",
+    "webpack-cli": "^3.3.11",
+    "webpack-webextension-plugin": "^0.2.0"
+  },
+  "dependencies": {
+    "parsimmon": "^1.13.0"
+  }
+}
