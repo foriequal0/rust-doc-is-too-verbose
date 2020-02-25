@@ -4,16 +4,19 @@
   "description": "Reduce verbosity of rust doc",
   "version": "0.0.1",
   "icons": {
-    "64": "icons/icon.png"
+    "48": "icon.svg",
+    "96": "icon.svg"
   },
   "content_scripts": [
     {
-      "matches": [
-        "*://*.mozilla.org/*"
-      ],
-      "js": [
-        "content_script.js"
-      ]
+      "matches": ["*://*/*"],
+      "js": ["content_script.js"]
     }
-  ]
+  ],
+  "page_action": {
+    "browser_style": true,
+    "default_icon": "icon.svg",
+    "default_title": "Whereami?",
+    "show_matches": ["*://*/*"]
+  }
 }
