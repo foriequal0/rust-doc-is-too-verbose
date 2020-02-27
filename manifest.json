@@ -9,14 +9,11 @@
   },
   "content_scripts": [
     {
-      "matches": ["*://*/*"],
+      "matches": [
+        "*://doc.rust-lang.org/std/*",
+        "*://docs.rs/*"
+      ],
       "js": ["content_script.js"]
     }
-  ],
-  "page_action": {
-    "browser_style": true,
-    "default_icon": "icon.svg",
-    "default_title": "Whereami?",
-    "show_matches": ["*://*/*"]
-  }
+  ]
 }

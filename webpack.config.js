@@ -1,4 +1,6 @@
 const path = require("path");
+const cp = require("child_process");
+
 const CopyPlugin = require('copy-webpack-plugin');
 const WebextensionPlugin = require('webpack-webextension-plugin');
 
