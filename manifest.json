@@ -10,8 +10,16 @@
   "content_scripts": [
     {
       "matches": [
+        "*://doc.rust-lang.org/alloc/*",
+        "*://doc.rust-lang.org/*/alloc/*",
+        "*://doc.rust-lang.org/core/*",
+        "*://doc.rust-lang.org/*/core/*",
+        "*://doc.rust-lang.org/proc_macro/*",
+        "*://doc.rust-lang.org/*/proc_macro/*",
         "*://doc.rust-lang.org/std/*",
-        "*://docs.rs/*"
+        "*://doc.rust-lang.org/*/std/*",
+        "*://doc.rust-lang.org/test/*",
+        "*://doc.rust-lang.org/*/test/*"
       ],
       "js": ["content_script.js"]
     }
