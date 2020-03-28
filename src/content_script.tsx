@@ -5,25 +5,27 @@ import {assert} from "./util";
 import {includes} from "./comparer";
 import {NormalizedImpl, normalizeImpl} from "./normalizer";
 
-type Entry = { text: string, item: NormalizedImpl, element: Element };
-type UnparsedItem = { text: string, element: Element };
+
+type Entry = { text: string, item: NormalizedImpl, impl: Element, implItems: Element | null };
+type UnparsedItem = { text: string, impl: Element, implItems: Element | null };
 
 const groups: { representative: Entry | null, entries: (Entry | UnparsedItem)[]}[] = [];
 
-for (const element of [...document.querySelectorAll(".impl")]) {
-    const text = element.querySelector(".in-band")?.textContent ?? "";
+for (const impl of [...document.querySelectorAll(".impl")]) {
+    const implItems = impl.nextElementSibling?.classList.contains("impl-items") ? impl.nextElementSibling : null;
+    const text = impl.querySelector(".in-band")?.textContent ?? "";
     const parsed = SimplifiedImpl.Implementation.parse(text);
     if (!parsed.status) {
         groups.push({
             representative: null,
             entries: [{
-                text, element
+                text, impl, implItems
             }]
         });
         continue;
     }
     const item = normalizeImpl(parsed.value);
-    const entry = { text, item, element };
+    const entry = { text, item, impl, implItems };
 
     let firstItem = true;
     for(const group of groups) {
@@ -57,37 +59,48 @@ for (const {representative, entries} of groups) {
         continue
     }
     assert(representative);
-    const div = document.createElement("div");
-    representative.element.insertAdjacentElement('beforebegin', div);
-    div.innerHTML = ("<p> * generated variadic items</p>");
 
-    const subdiv = document.createElement("div");
-    div.appendChild(subdiv);
-    subdiv.className = "hidden";
-    subdiv.setAttribute("style", "display:hidden; ");
-    div.addEventListener('click', () => {
-        if (subdiv.className === "hidden") {
-            subdiv.className = "visible";
-            subdiv.removeAttribute("style");
-        } else {
-            subdiv.className = "hidden";
-            subdiv.setAttribute("style", "display:hidden; ");
-        }
-    });
+    // remove existing non-representitive items
     for (const entry of entries) {
-        if (entry.element !== representative.element) {
-            const parent = entry.element.parentNode;
-            const element = entry.element;
-            const nextSibling = entry.element.nextElementSibling;
-            parent?.removeChild(element);
-            if (nextSibling) {
-                parent?.removeChild(nextSibling);
-            }
-
-            subdiv.appendChild(element);
-            if (nextSibling) {
-                subdiv.appendChild(nextSibling);
-            }
+        if (entry.impl !== representative.impl) {
+            entry.impl.remove();
+            entry.implItems?.remove();
         }
+    }
+
+    function toggle(e: Event, hidden: boolean) {
+        const currentTarget = e.currentTarget as Element;
+        currentTarget.parentElement?.insertAdjacentElement('afterend', createGeneratedSection(hidden));
+        currentTarget.parentElement?.remove();
+    }
+
+    function createGeneratedSection(hidden: boolean) {
+        if (hidden) {
+            return <div>
+                <p style={{textDecoration: "underline"}} onClick={(e) => toggle(e, false)}>[+] Generated variadic items</p>
+            </div>;
+        } else {
+            const items: Element[] = [];
+            for (const entry of entries) {
+                if (entry.impl !== representative?.impl) {
+                    items.push(entry.impl);
+                    if (entry.implItems) {
+                        items.push(entry.implItems);
+                    }
+                }
+            }
+            return <div>
+                <p style={{textDecoration: "underline"}} onClick={(e) => toggle(e, true)}>[-] Generated variadic items</p>
+                <div style={{borderStyle:"dotted"}}>
+                    {items}
+                </div>
+            </div>;
+        }
+    }
+
+    if (representative.implItems) {
+        representative.implItems.insertAdjacentElement('afterend', createGeneratedSection(true));
+    } else {
+        representative.impl.insertAdjacentElement('afterend', createGeneratedSection(true));
     }
 }
