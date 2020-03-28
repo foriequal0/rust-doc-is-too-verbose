@@ -7,7 +7,7 @@ const webpack = require('webpack');
 
 const config = {
     entry: {
-        content_script: path.join(__dirname, "src/content_script.ts"),
+        content_script: path.join(__dirname, "src/content_script.tsx"),
     },
     output: {
         filename: "[name].js",

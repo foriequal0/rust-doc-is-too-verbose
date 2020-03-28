@@ -6,7 +6,9 @@
     "strict": true,
     "noImplicitAny": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": true,
+    "jsx": "react",
+    "jsxFactory": "TSX.createElement"
   },
   "exclude": [
     "node_modules"

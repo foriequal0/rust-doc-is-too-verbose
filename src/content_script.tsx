@@ -1,3 +1,5 @@
+import * as TSX from "jsx-dom";
+
 import {SimplifiedImpl} from "./parser";
 import {assert} from "./util";
 import {includes} from "./comparer";

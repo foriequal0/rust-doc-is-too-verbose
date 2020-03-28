@@ -2,7 +2,7 @@
   "name": "rust-doc-is-too-verbose",
   "version": "0.0.1",
   "description": "Reduce verbosity of rust doc",
-  "main": "src/content_script.ts",
+  "main": "src/content_script.tsx",
   "scripts": {},
   "author": "SeongChan Lee",
   "license": "ISC",
@@ -26,6 +26,7 @@
     "webpack-webextension-plugin": "^0.2.0"
   },
   "dependencies": {
+    "jsx-dom": "^6.4.14-beta.3",
     "parsimmon": "^1.13.0"
   }
 }
