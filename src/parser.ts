@@ -2,8 +2,8 @@ import * as P from "parsimmon";
 
 function name<T>(name: string) {
     return function(parser: P.Parser<T>) {
-        return parser.map(value => ({ name, value,}));
-    }
+        return parser.map(value => ({ name, value }));
+    };
 }
 
 function T(token: string): P.Parser<string> {
@@ -216,7 +216,7 @@ export const SimplifiedImpl = P.createLanguage({
             T("dyn")
                 .then(r.TraitBound)
                 .thru(name("traitObjectTypeOneBound")),
-            r.TypePath.thru(name("typePath")),
+            r.TypePath.thru(name("typePath"))
         ),
     WhereClause: r => T("where").then<Where>(CommaSep(r.WhereClauseItem)),
     WhereClauseItem: r => P.alt<GenericParam>(r.LifetimeWhereClauseItem, r.TypeBoundWhereClauseItem),
