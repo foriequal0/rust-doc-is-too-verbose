@@ -80,7 +80,9 @@ for (const {representative, entries} of groups) {
     function createGeneratedSection(hidden: boolean) {
         if (hidden) {
             return <div>
-                <p style={{textDecoration: "underline"}} onClick={(e) => toggle(e, false)}>[+] Generated variadic items</p>
+                <p style={{textDecoration: "underline"}} onClick={(e) => toggle(e, false)}>
+                    [+] Show Generated variadic implementations
+                </p>
             </div>;
         } else {
             const items: Element[] = [];
@@ -93,7 +95,9 @@ for (const {representative, entries} of groups) {
                 }
             }
             return <div>
-                <p style={{textDecoration: "underline"}} onClick={(e) => toggle(e, true)}>[-] Generated variadic items</p>
+                <p style={{textDecoration: "underline"}} onClick={(e) => toggle(e, true)}>
+                    [-] Hide Generated variadic implementations
+                </p>
                 <div style={{borderStyle:"dotted"}}>
                     {items}
                 </div>
