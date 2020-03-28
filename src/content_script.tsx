@@ -35,6 +35,9 @@ for (const impl of [...document.querySelectorAll(".impl")]) {
 
         const newIncludesExisting = includes(item, group.representative.item);
         const existingIncludesNew = includes(group.representative.item, item);
+        if (existingIncludesNew && newIncludesExisting) {
+            continue;
+        }
         if (existingIncludesNew) {
             group.representative = entry;
             group.entries.push(entry);
