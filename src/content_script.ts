@@ -22,7 +22,7 @@ for (const impl of [...document.querySelectorAll(".impl")]) {
     }
     const normalized = normalizeImpl(parsed.value);
     const item = { text, normalized, impl};
-    console.log(item);
+
     let firstItem = true;
     for(const group of groups) {
         if (group.representative === null) {
