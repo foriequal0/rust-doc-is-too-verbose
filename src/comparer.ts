@@ -123,7 +123,9 @@ function includesArray<T>(a: T[], b: T[], include: (lhs: T, rhs: T) => boolean):
             return false
         }
     }
-
+    if (a.length > 0 && b.length === 0) {
+        return false;
+    }
     return a.length >= b.length;
 }
 
