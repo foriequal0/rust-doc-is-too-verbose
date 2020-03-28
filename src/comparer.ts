@@ -82,20 +82,46 @@ function compareType(a: Type, b: Type): number {
 }
 
 function compareTypePath(a: TypePath, b: TypePath): number {
-    if (a.path < b.path) {
+    if ("path" in a && "path" in b) {
+        if (a.path < b.path) {
+            return -1;
+        } else if (a.path > b.path) {
+            return 1;
+        }
+        const genericArgsA = a.genericArgs ?? [];
+        const genericArgsB = b.genericArgs ?? [];
+        const typeBeginA = genericArgsA.findIndex(x => typeof x !== "string");
+        const typeBeginB = genericArgsB.findIndex(x => typeof x !== "string");
+
+        return compareArray(
+            genericArgsA.slice(typeBeginA) as Type[],
+            genericArgsB.slice(typeBeginB) as Type[],
+            compareType);
+    } else if ("fn" in a && "fn" in b) {
+        const fn = defaultCompare(a.fn, b.fn);
+        if (fn !== 0) {
+            return fn;
+        }
+        const modifiers = defaultCompare(a.modifiers, b.modifiers);
+        if (modifiers !== 0) {
+            return modifiers;
+        }
+        const inputs = compareArray(a.inputs, b.inputs, compareType);
+        if (inputs !== 0){
+            return inputs
+        }
+        if (a.return !== null && b.return !== null) {
+            return compareType(a.return, b.return);
+        } else if (a.return != null) {
+            return -1;
+        } else {
+            return 1;
+        }
+    } else if ("path" in a) {
         return -1;
-    } else if (a.path > b.path) {
+    } else {
         return 1;
     }
-    const genericArgsA = a.genericArgs ?? [];
-    const genericArgsB = b.genericArgs ?? [];
-    const typeBeginA = genericArgsA.findIndex(x => typeof x !== "string");
-    const typeBeginB = genericArgsB.findIndex(x => typeof x !== "string");
-
-    return compareArray(
-        genericArgsA.slice(typeBeginA) as Type[],
-        genericArgsB.slice(typeBeginB) as Type[],
-        compareType);
 }
 
 export function compareTypeParamBound(a: TypeParamBound, b: TypeParamBound): number {
@@ -132,6 +158,9 @@ function includesArray<T>(a: T[], b: T[], include: (lhs: T, rhs: T) => boolean):
 // a includes b
 export function includes(implA: NormalizedImpl, implB: NormalizedImpl): boolean {
     function includesType(a: Type, b: Type): boolean {
+        if (!a.name) {
+            console.log(a["name"], b["name"]);
+        }
         const nameOrd = a.name.localeCompare(b.name);
         if (nameOrd !== 0) {
             return false;
@@ -188,18 +217,33 @@ export function includes(implA: NormalizedImpl, implB: NormalizedImpl): boolean 
     }
 
     function includesTypePath(a: TypePath, b: TypePath): boolean {
-        if (a.path != b.path) {
-            return false;
-        }
-        const genericArgsA = a.genericArgs ?? [];
-        const genericArgsB = b.genericArgs ?? [];
-        const typeBeginA = genericArgsA.findIndex(x => typeof x !== "string");
-        const typeBeginB = genericArgsB.findIndex(x => typeof x !== "string");
+        if ("path" in a && "path" in b) {
+            if (a.path != b.path) {
+                return false;
+            }
+            const genericArgsA = a.genericArgs ?? [];
+            const genericArgsB = b.genericArgs ?? [];
+            const typeBeginA = genericArgsA.findIndex(x => typeof x !== "string");
+            const typeBeginB = genericArgsB.findIndex(x => typeof x !== "string");
 
-        return includesArray(
-            genericArgsA.slice(typeBeginA) as Type[],
-            genericArgsB.slice(typeBeginB) as Type[],
-            includesType);
+            return includesArray(
+                genericArgsA.slice(typeBeginA) as Type[],
+                genericArgsB.slice(typeBeginB) as Type[],
+                includesType);
+        } else if ("fn" in a && "fn" in b) {
+            if (a.fn != b.fn || a.modifiers != b.modifiers) {
+                return false;
+            }
+            if (!includesArray(a.inputs, b.inputs, includesType)) {
+                return false;
+            }
+            if (a.return == null && b.return == null) {
+                return true;
+            } else if (a.return !== null && b.return !== null) {
+                return includesType(a.return, b.return);
+            }
+        }
+        return false;
     }
 
     function includesTypeParamBounds(a: TypeParamBound[], b: TypeParamBound[]): boolean {

@@ -66,8 +66,8 @@ export type TypeParamBound = LifetimeBound | TraitBound;
 export type LifetimeBound = string;
 export type TraitBound = { optional: boolean; typePath: TypePath };
 
-export type Path = TypePath | FnPath;
-export type TypePath = {
+export type TypePath = Path | FnPath;
+export type Path = {
     path: string;
     genericArgs: GenericArg[] | null;
 };
@@ -146,7 +146,7 @@ export const SimplifiedImpl = P.createLanguage({
     LifetimeBounds: (r): P.Parser<LifetimeBound[]> => r.Lifetime.sepBy1(T("+")),
 
     TypePath: r =>
-        P.alt<Path>(
+        P.alt<TypePath>(
             P.seqObj<FnPath>(
                 [
                     "modifiers",
@@ -156,9 +156,9 @@ export const SimplifiedImpl = P.createLanguage({
                 ],
                 ["fn", r.TypePathSegments.lookahead(T("("))],
                 ["inputs", Paren(CommaSep(r.Type))],
-                ["return", Optional(P.seq(T("->"), r.Type))]
+                ["return", Optional(T("->").then(r.Type))]
             ),
-            P.seqObj<TypePath>(["path", r.TypePathSegments], ["genericArgs", Optional(r.GenericArgs)])
+            P.seqObj<Path>(["path", r.TypePathSegments], ["genericArgs", Optional(r.GenericArgs)])
         ),
     TypePathSegments: r => r.Identifier.sepBy1(T("::")).map(x => x.join("::")),
     GenericArgs: r =>

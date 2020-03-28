@@ -39,7 +39,7 @@ export function normalizeImpl(impl: Impl): NormalizedImpl {
     }
 
     function rewriteTypePath(typePath: TypePath): TypePath {
-        if (typePath.path in paramRewrite) {
+        if ("path" in typePath && typePath.path in paramRewrite) {
             return {
                 path: paramRewrite[typePath.path],
                 genericArgs: typePath.genericArgs ? typePath.genericArgs.map(x => typeof x === "string" ? x : rewriteType(x)) : null,
