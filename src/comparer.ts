@@ -143,13 +143,13 @@ export function compareTypeParamBound(a: TypeParamBound, b: TypeParamBound): num
 }
 
 // a includes b
-function includesArray<T>(a: T[], b: T[], include: (lhs: T, rhs: T) => boolean): boolean {
+function includesArray<T>(a: T[], b: T[], include: (lhs: T, rhs: T) => boolean, excludeEmpty = true): boolean {
     for (let i = 0; i < Math.min(a.length, b.length); i++) {
         if (!include(a[i], b[i])) {
             return false
         }
     }
-    if (a.length > 0 && b.length === 0) {
+    if (excludeEmpty && a.length > 0 && b.length === 0) {
         return false;
     }
     return a.length >= b.length;
@@ -234,7 +234,7 @@ export function includes(implA: NormalizedImpl, implB: NormalizedImpl): boolean 
             if (a.fn != b.fn || a.modifiers != b.modifiers) {
                 return false;
             }
-            if (!includesArray(a.inputs, b.inputs, includesType)) {
+            if (!includesArray(a.inputs, b.inputs, includesType, false)) {
                 return false;
             }
             if (a.return == null && b.return == null) {
