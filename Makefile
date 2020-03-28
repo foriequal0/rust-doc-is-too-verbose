@@ -9,6 +9,7 @@ MAKEFLAGS += --warn-undefined-variables
 build: clean
 	export NODE_ENV=production
 	npx webpack && npx web-ext build -o -a artifacts -s dist
+	git archive --format=tar.gz --prefix=rust-doc-is-too-verbose/ -o artifacts/rust-doc-is-too-verbose.src.tar.gz HEAD
 
 .PHONY: clean
 clean:
