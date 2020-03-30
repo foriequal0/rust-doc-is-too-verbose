@@ -19,7 +19,8 @@
         "*://doc.rust-lang.org/std/*",
         "*://doc.rust-lang.org/*/std/*",
         "*://doc.rust-lang.org/test/*",
-        "*://doc.rust-lang.org/*/test/*"
+        "*://doc.rust-lang.org/*/test/*",
+        "*://docs.rs/*"
       ],
       "js": ["content_script.js"]
     }
