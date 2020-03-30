@@ -1,0 +1,45 @@
+name: Build
+
+on:
+  push:
+    branches: [ master ]
+    pull_request:
+      branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 12
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12
+    - run: npm ci
+    - name: Build
+      id: build
+      run: |
+        make build
+        echo "::set-output name=src_archive::$(ls artifacts/*.tar.gz)"
+        echo "::set-output name=build::$(ls artifacts/*.zip)"
+    - uses: actions/upload-artifact@v1
+      with:
+        name: source_archive
+        path: ${{steps.build.outputs.src_archive}}
+    - uses: actions/upload-artifact@v1
+      with:
+        name: build
+        path: ${{steps.build.outputs.build}}
+
+  parser-coverage:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 12
+      uses: actions/setup-node@v1
+      with:
+        node-version: 12
+    - run: npm ci
+    - run: make coverage
